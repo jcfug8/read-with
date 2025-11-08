@@ -5,19 +5,19 @@ export const StoryPage = {
   components: {
     Sentence
   },
-  props: ['pageData', 'isCurrentPage'],
+  props: ['pageData', 'isCurrentPage', 'storyDir', 'pageStyle'],
   template: `
-    <div class="content-page" ref="pageElement">
+    <div :class="['content-page', { 'cover-back-page': pageStyle === 'cover' || pageStyle === 'back' }]" ref="pageElement">
       <div class="page-images">
         <img 
           v-for="(image, imgIndex) in pageData.images" 
           :key="imgIndex"
-          :src="image" 
+          :src="getImagePath(image)" 
           :alt="'Page image ' + (imgIndex + 1)"
-          class="page-image"
+          :class="['page-image', { 'cover-back-image': pageStyle === 'cover' || pageStyle === 'back' }]"
         />
       </div>
-      <div class="page-sentences">
+      <div :class="['page-sentences', { 'cover-back-text': pageStyle === 'cover' || pageStyle === 'back' }]">
         <Sentence
           v-for="(sentence, sentenceIndex) in pageData.sentences"
           :key="sentenceIndex"
@@ -49,6 +49,15 @@ export const StoryPage = {
     }
   },
   methods: {
+    getImagePath(imageFilename) {
+      if (!this.storyDir || !imageFilename) return imageFilename;
+      // If the image path is already absolute (starts with http:// or https://), return as-is
+      if (imageFilename.startsWith('http://') || imageFilename.startsWith('https://')) {
+        return imageFilename;
+      }
+      // Otherwise, resolve relative to the story directory
+      return `stories/${this.storyDir}/${imageFilename}`;
+    },
     getFocusPhrase(focusPhraseSize) {
       if (this.isCompleted) return;
       let focusPhrase = this.sentenceRefs[this.currentSentenceIndex].getFocusPhrase(focusPhraseSize);

@@ -1,9 +1,9 @@
 {
   "stories": [
-    "the_worm_and_the_apple.json",
-    "the_cat_and_the_ball.json",
-    "the_dog_and_the_bone.json",
-    "the_bird_and_the_nest.json"
+    "the_worm_and_the_apple",
+    "the_cat_and_the_ball",
+    "the_dog_and_the_bone",
+    "the_bird_and_the_nest"
   ]
 }
 

@@ -41,9 +41,11 @@ const Story = {
         <StoryPage 
           v-for="(page, index) in pages" 
           :key="index"
+          :pageStyle="index === 0 ? 'cover' : index === pages.length - 1 ? 'back' : 'normal'"
           :ref="el => { if (el) pageRefs[index] = el }"
           :pageData="page.data"
           :isCurrentPage="index === currentPageIndex"
+          :storyDir="storyFile"
           v-show="index === currentPageIndex"
         />
       </div>
@@ -160,7 +162,7 @@ const Story = {
     }
     
     try {
-      const response = await fetch(`stories/${storyFile}.json`);
+      const response = await fetch(`stories/${storyFile}/story.json`);
       if (response.ok) {
         this.story = await response.json();
         this.pages = this.buildPagesList(this.story);

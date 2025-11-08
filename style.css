@@ -144,6 +144,11 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.cover-back-image {
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .page-sentences {
   display: flex;
   flex-direction: column;
@@ -155,6 +160,11 @@ body {
   font-size: 1.4rem;
   line-height: 1.8;
   color: #333;
+}
+
+.cover-back-text .sentence {
+  font-size: 2.5rem;
+  font-weight: bold;
 }
 
 .word {

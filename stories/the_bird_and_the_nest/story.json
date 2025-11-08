@@ -1,6 +1,6 @@
 {
     "title": "The Bird and The Nest",
-    "cover_image": "https://picsum.photos/300",
+    "cover_image": "cover.png",
     "pages": [
         {
             "sentences": [
@@ -8,7 +8,7 @@
                 "The bird looked for twigs and leaves."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_1.png"
             ]
         },
         {
@@ -17,7 +17,7 @@
                 "The bird started building the nest."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_2.png"
             ]
         },
         {
@@ -27,7 +27,7 @@
                 "The bird was ready for her eggs."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_3.png"
             ]
         }
     ]
