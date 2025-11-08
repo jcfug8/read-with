@@ -1,0 +1,34 @@
+{
+    "title": "The Worm and The Apple",
+    "cover_image": "https://picsum.photos/300",
+    "pages": [
+        {
+            "sentences": [
+                "Once upon a time, there was a worm who lived in the apple.",
+                "The worm loved to eat the apple."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "One day, the worm decided to eat the apple.",
+                "The apple was sweet and juicy."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The worm ate the apple and felt happy.",
+                "The end."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        }
+    ]
+}
+

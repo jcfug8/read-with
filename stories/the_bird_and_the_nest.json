@@ -1,0 +1,35 @@
+{
+    "title": "The Bird and The Nest",
+    "cover_image": "https://picsum.photos/300",
+    "pages": [
+        {
+            "sentences": [
+                "A bird wanted to build a nest.",
+                "The bird looked for twigs and leaves."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The bird found a good tree branch.",
+                "The bird started building the nest."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The bird worked hard all day.",
+                "The nest was cozy and warm.",
+                "The bird was ready for her eggs."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        }
+    ]
+}
+

@@ -1,0 +1,34 @@
+{
+    "title": "The Cat and The Ball",
+    "cover_image": "https://picsum.photos/300",
+    "pages": [
+        {
+            "sentences": [
+                "There was a cat who loved to play.",
+                "The cat found a red ball."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The cat pushed the ball with its paw.",
+                "The ball rolled across the floor."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The cat chased the ball everywhere.",
+                "The cat had so much fun playing."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        }
+    ]
+}
+

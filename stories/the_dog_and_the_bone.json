@@ -1,0 +1,35 @@
+{
+    "title": "The Dog and The Bone",
+    "cover_image": "https://picsum.photos/300",
+    "pages": [
+        {
+            "sentences": [
+                "A dog found a big bone in the yard.",
+                "The dog was very happy."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The dog wanted to hide the bone.",
+                "The dog dug a hole in the ground."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        },
+        {
+            "sentences": [
+                "The dog put the bone in the hole.",
+                "The dog covered it with dirt.",
+                "The dog was proud of his hiding spot."
+            ],
+            "images": [
+                "https://picsum.photos/150"
+            ]
+        }
+    ]
+}
+
