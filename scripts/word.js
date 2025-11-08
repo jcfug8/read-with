@@ -84,7 +84,7 @@ export const Word = {
         
         // Animate
         requestAnimationFrame(() => {
-          particle.style.transition = 'all 0.6s ease-out';
+          particle.style.transition = 'all 1s ease-out';
           particle.style.transform = `translate(${endX - centerX}px, ${endY - centerY}px) scale(0)`;
           particle.style.opacity = '0';
         });
@@ -105,15 +105,16 @@ export const Word = {
         
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800; // Higher pitch for success
+
+        // Simple, short beep
+        oscillator.frequency.value = 600;
         oscillator.type = 'sine';
         
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
         
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
+        oscillator.stop(audioContext.currentTime + 0.1);
       } catch (e) {
         console.log('Could not play sound:', e);
       }

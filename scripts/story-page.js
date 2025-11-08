@@ -91,7 +91,7 @@ export const StoryPage = {
       const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#ff8b94', '#95e1d3'];
       
       // Create more particles for page completion (30 particles)
-      const particleCount = 30;
+      const particleCount = 50;
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'spark-particle';
@@ -109,7 +109,7 @@ export const StoryPage = {
         
         // Random angle and distance (much farther for page completion)
         const angle = (i / particleCount) * Math.PI * 2;
-        const distance = 100 + Math.random() * 300;
+        const distance = 100 + Math.random() * (rect.width * .9);
         const endX = centerX + Math.cos(angle) * distance;
         const endY = centerY + Math.sin(angle) * distance;
         
@@ -134,20 +134,32 @@ export const StoryPage = {
     playPageCompleteSound() {
       try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
         
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        oscillator.frequency.value = 200; // Lower pitch for page completion
-        oscillator.type = 'sine';
+        // Create a more elaborate musical sequence (major chord arpeggio)
+        const playTone = (frequency, startTime, duration, type = 'sine') => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = frequency;
+          oscillator.type = type;
+          
+          gainNode.gain.setValueAtTime(0, startTime);
+          gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+          gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+          
+          oscillator.start(startTime);
+          oscillator.stop(startTime + duration);
+        };
         
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
+        // Play a major chord arpeggio (C-E-G-C) - more elaborate
+        const now = audioContext.currentTime;
+        playTone(261.63, now, 0.2, 'sine');        // C4
+        playTone(329.63, now + 0.1, 0.2, 'sine');  // E4
+        playTone(392.00, now + 0.2, 0.2, 'sine');  // G4
+        playTone(523.25, now + 0.3, 0.3, 'triangle'); // C5 (higher, longer)
       }
       catch (e) {
         console.log('Could not play sound:', e);
