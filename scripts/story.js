@@ -162,9 +162,22 @@ const Story = {
     }
     
     try {
-      const response = await fetch(`stories/${storyFile}/story.json`);
-      if (response.ok) {
-        this.story = await response.json();
+      // Fetch both metadata.json and story.json
+      const [metadataResponse, storyResponse] = await Promise.all([
+        fetch(`stories/${storyFile}/metadata.json`),
+        fetch(`stories/${storyFile}/story.json`)
+      ]);
+      
+      if (metadataResponse.ok && storyResponse.ok) {
+        const metadata = await metadataResponse.json();
+        const storyData = await storyResponse.json();
+        
+        // Merge metadata and story data
+        this.story = {
+          ...metadata,
+          ...storyData
+        };
+        
         this.pages = this.buildPagesList(this.story);
         
         // Validate and adjust page index after pages are loaded

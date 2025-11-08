@@ -1,6 +1,4 @@
 {
-    "title": "The Cat and The Ball",
-    "cover_image": "https://picsum.photos/300",
     "pages": [
         {
             "sentences": [
@@ -8,7 +6,7 @@
                 "The cat found a red ball."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_1.png"
             ]
         },
         {
@@ -17,7 +15,7 @@
                 "The ball rolled across the floor."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_2.png"
             ]
         },
         {
@@ -26,7 +24,7 @@
                 "The cat had so much fun playing."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_3.png"
             ]
         }
     ]

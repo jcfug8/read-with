@@ -23,14 +23,14 @@ createApp({
     };
   },
   methods: {
-    getCoverImagePath(story) {
-      if (!story.cover_image || !story.filename) return story.cover_image;
+    getCoverImagePath(metadata) {
+      if (!metadata.cover_image) return `stories/${metadata.filename}/cover.png`;
       // If the image path is already absolute (starts with http:// or https://), return as-is
-      if (story.cover_image.startsWith('http://') || story.cover_image.startsWith('https://')) {
-        return story.cover_image;
+      if (metadata.cover_image.startsWith('http://') || metadata.cover_image.startsWith('https://')) {
+        return metadata.cover_image;
       }
       // Otherwise, resolve relative to the story directory
-      return `stories/${story.filename}/${story.cover_image}`;
+      return `stories/${metadata.filename}/${metadata.cover_image}`;
     }
   },
   async mounted() {
@@ -38,13 +38,13 @@ createApp({
     const indexResponse = await fetch('stories/index.json');
     const index = await indexResponse.json();
     
-    // Fetch all story files dynamically from their directories
+    // Fetch metadata.json for each story
     const storyPromises = index.stories.map(async (storyDir) => {
-      const response = await fetch(`stories/${storyDir}/story.json`);
-      const storyData = await response.json();
+      const response = await fetch(`stories/${storyDir}/metadata.json`);
+      const metadata = await response.json();
       return {
-        ...storyData,
-        filename: storyDir  // Directory name, used for linking
+        ...metadata,
+        filename: storyDir
       };
     });
     
