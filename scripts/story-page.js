@@ -40,7 +40,8 @@ export const StoryPage = {
   },
   methods: {
     getFocusPhrase(focusPhraseSize) {
-      focusPhrase = this.sentenceRefs[this.currentSentenceIndex].getFocusPhrase(5);
+      if (this.isCompleted) return;
+      let focusPhrase = this.sentenceRefs[this.currentSentenceIndex].getFocusPhrase(focusPhraseSize);
       for (let wordsNeeded = focusPhraseSize - focusPhrase.length; wordsNeeded > 0; wordsNeeded = focusPhraseSize - focusPhrase.length) {
         focusPhrase = this.sentenceRefs[this.currentSentenceIndex+1].getFocusPhrase(wordsNeeded);
       }

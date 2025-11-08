@@ -13,14 +13,17 @@ const Story = {
       <a href="index.html" class="back-link">← Back to Stories</a>
       <div v-if="loading" class="loading">Loading story...</div>
       <div v-else-if="pages.length > 0" class="story-container">
-        <Recognize :focusPhrase="currentFocusPhrase" @result="handleRecognizeResult" />
+        <Recognize 
+          :focusPhrase="currentFocusPhrase" 
+          @result="handleRecognizeResult" 
+          @recognizing="handleRecognizing"
+        />
         <StoryPage 
           v-for="(page, index) in pages" 
           :key="index"
           :ref="el => { if (el) pageRefs[index] = el }"
           :pageData="page.data"
           :isCurrentPage="index === currentPageIndex"
-          @updateFocusPhrase="handleUpdateFocusPhrase"
           v-show="index === currentPageIndex"
         />
         
@@ -60,17 +63,12 @@ const Story = {
     };
   },
   watch: {
-    currentPageIndex() {
+    currentPageIndex(newIndex) {
       this.updateUrl();
+      if (this.pageRefs[newIndex]) {
+        this.currentFocusPhrase = this.pageRefs[newIndex].getFocusPhrase(this.focusPhraseSize);
+      }
     },
-    pageRefs: {
-      handler(newValue){
-        if (newValue.length > this.currentPageIndex) {
-          this.currentFocusPhrase = newValue[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
-        }
-      },
-      immediate: true,
-    }
   },
   methods: {
     updateUrl() {
@@ -80,6 +78,9 @@ const Story = {
       url.searchParams.set('story', this.storyFile);
       url.searchParams.set('page', this.currentPageIndex);
       window.history.pushState({}, '', url);
+    },
+    handleRecognizing() {
+      this.currentFocusPhrase = this.pageRefs[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
     },
     handleRecognizeResult(result) {
       const allWords = [];
@@ -93,10 +94,7 @@ const Story = {
         this.pageRefs[this.currentPageIndex].processRecognitionResult(allWords[i])
       }
 
-      currentFocusPhrase = this.pageRefs[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
-    },
-    handleUpdateFocusPhrase(focusPhrase) {
-      this.currentFocusPhrase = focusPhrase;
+      this.currentFocusPhrase = this.pageRefs[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
     },
     nextPage() {
       if (this.currentPageIndex < this.pages.length - 1) {

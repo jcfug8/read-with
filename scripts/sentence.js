@@ -43,6 +43,7 @@ export const Sentence = {
       return this.isCompleted;
     },
     getFocusPhrase(focusPhraseSize) {
+      if (this.isCompleted) return;
       return this.words.slice(this.currentWordIndex, this.currentWordIndex + focusPhraseSize).join(' ');
     },
     playSentenceAdvanceSound() {
