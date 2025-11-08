@@ -18,14 +18,6 @@ const Story = {
           @result="handleRecognizeResult" 
           @recognizing="handleRecognizing"
         />
-        <StoryPage 
-          v-for="(page, index) in pages" 
-          :key="index"
-          :ref="el => { if (el) pageRefs[index] = el }"
-          :pageData="page.data"
-          :isCurrentPage="index === currentPageIndex"
-          v-show="index === currentPageIndex"
-        />
         
         <!-- Navigation -->
         <div class="navigation">
@@ -45,6 +37,15 @@ const Story = {
             Next →
           </button>
         </div>
+        
+        <StoryPage 
+          v-for="(page, index) in pages" 
+          :key="index"
+          :ref="el => { if (el) pageRefs[index] = el }"
+          :pageData="page.data"
+          :isCurrentPage="index === currentPageIndex"
+          v-show="index === currentPageIndex"
+        />
       </div>
       <div v-else class="error">Story not found</div>
     </div>
@@ -55,7 +56,6 @@ const Story = {
       loading: true,
       pages: [],
       currentPageIndex: 0,
-      recognitionResult: null,
       currentFocusPhrase: null,
       storyFile: null,
       pageRefs: {},
