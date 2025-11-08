@@ -53,10 +53,24 @@ const Story = {
       pages: [],
       currentPageIndex: 0,
       recognitionResult: null,
-      currentFocusPhrase: null
+      currentFocusPhrase: null,
+      storyFile: null
     };
   },
+  watch: {
+    currentPageIndex(newIndex) {
+      this.updateUrl();
+    }
+  },
   methods: {
+    updateUrl() {
+      if (!this.storyFile) return;
+      
+      const url = new URL(window.location);
+      url.searchParams.set('story', this.storyFile);
+      url.searchParams.set('page', this.currentPageIndex);
+      window.history.pushState({}, '', url);
+    },
     handleRecognizeResult(result) {
       this.recognitionResult = result;
     },
@@ -106,13 +120,24 @@ const Story = {
     }
   },
   async mounted() {
-    // Get story filename from query parameter
+    // Get story filename and page from query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const storyFile = urlParams.get('story');
+    const pageParam = urlParams.get('page');
     
     if (!storyFile) {
       this.loading = false;
       return;
+    }
+    
+    this.storyFile = storyFile;
+    
+    // Set initial page from query param if provided
+    if (pageParam !== null) {
+      const pageIndex = parseInt(pageParam, 10);
+      if (!isNaN(pageIndex) && pageIndex >= 0) {
+        this.currentPageIndex = pageIndex;
+      }
     }
     
     try {
@@ -120,6 +145,14 @@ const Story = {
       if (response.ok) {
         this.story = await response.json();
         this.pages = this.buildPagesList(this.story);
+        
+        // Validate and adjust page index after pages are loaded
+        if (this.currentPageIndex >= this.pages.length) {
+          this.currentPageIndex = this.pages.length - 1;
+        }
+        
+        // Update URL with initial page
+        this.updateUrl();
       }
     } catch (error) {
       console.error('Error loading story:', error);

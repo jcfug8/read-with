@@ -78,7 +78,6 @@ export const StoryPage = {
       handler(newResult) {
         if (!this.isActive) return; // Ignore if page is not active
         if (!newResult || !Array.isArray(newResult) || newResult.length === 0) return;
-        console.log("handling recognition result: ", newResult);
         
         this.processRecognitionResult(newResult);
       },
@@ -169,9 +168,7 @@ export const StoryPage = {
         this.$emit('updateFocusPhrase', focusPhrase);
       }
     },
-    processRecognitionResult(transcripts) {
-      console.log("processing recognition result: ", transcripts);
-      
+    processRecognitionResult(transcripts) {      
       // Only process if we have a current word to match
       if (!this.currentWord || !this.normalizedCurrentWord) {
         return;
@@ -185,53 +182,11 @@ export const StoryPage = {
         
         // Check if any word in the transcript matches the current word
         for (let j = 0; j < words.length; j++) {
+            console.log("checking word: ", words[j], "---", this.normalizedCurrentWord);
           if (words[j] === this.normalizedCurrentWord) {
             this.advanceWord();
           }
         }
-      }
-    },
-    playWordAdvanceSound() {
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800; // Higher pitch for success
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-      } catch (e) {
-        console.log('Could not play sound:', e);
-      }
-    },
-    playSentenceAdvanceSound() {
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        oscillator.frequency.value = 400; // Higher pitch for success
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-      }
-      catch (e) {
-        console.log('Could not play sound:', e);
       }
     },
     playPageCompleteSound() {
@@ -264,8 +219,7 @@ export const StoryPage = {
         // Advance to next word in current sentence
         this.currentWordIndex++;
       }
-      // Play success sound when word is matched
-      this.playWordAdvanceSound();
+      // Sound will be played by Word component when isCompleted changes
       // Emit focus phrase update after advancing
       this.emitFocusPhrase();
     },
@@ -279,8 +233,7 @@ export const StoryPage = {
         this.emitFocusPhrase();
         return;
       }
-      // Play success sound when sentence is matched
-      this.playSentenceAdvanceSound();
+      // Sound will be played by Sentence component when all words become completed
       // Advance to next sentence and reset word index
       this.currentSentenceIndex++;
       this.currentWordIndex = 0;

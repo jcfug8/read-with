@@ -11,144 +11,125 @@ export const Recognize = {
         {{ isRecognizing ? 'Stop Recognition' : 'Start Recognition' }}
       </button>
       <div v-if="!isSupported" class="error-message">
-        Speech recognition is not supported in your browser.
+        WebSocket or microphone access is not supported in your browser.
       </div>
     </div>
   `,
   data() {
     return {
-      recognition: null,
+      websocket: null,
+      audioContext: null,
+      sourceNode: null,
+      processorNode: null,
+      mediaStream: null,
       isRecognizing: false,
-      isSupported: false
+      isSupported: false,
+      serverUrl: 'ws://localhost:8001/ws/transcribe',
+      sampleRate: 16000,
+      channels: 1
     };
   },
   watch: {
     focusPhrase: {
       handler(newPhrase) {
-          if (this.recognition && newPhrase) {
-          this.updatePhrases(newPhrase);
+        if (this.websocket && this.websocket.readyState === WebSocket.OPEN && newPhrase) {
+          this.updateKeywords(newPhrase);
         }
       },
       immediate: false
     }
   },
   mounted() {
-    // Check if SpeechRecognition is available
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (SpeechRecognition) {
+    // Check if WebSocket and Web Audio API are available
+    if (window.WebSocket && (window.AudioContext || window.webkitAudioContext)) {
       this.isSupported = true;
-      this.initializeRecognition();
     }
   },
   methods: {
-    buildPhrases(focusPhrase) {
-      if (!focusPhrase) return [];
+    updateKeywords(focusPhrase) {
+      if (!this.websocket || this.websocket.readyState !== WebSocket.OPEN || !focusPhrase) return;
       
-      // Handle both string and array inputs
-      const sentences = typeof focusPhrase === 'string' ? [focusPhrase] : focusPhrase;
-      if (sentences.length === 0) return [];
-      
-      const phrases = [];
-      
-      sentences.forEach(sentence => {
-        // Remove punctuation and normalize
-        const normalized = sentence.toLowerCase().replace(/[.,!?;:]/g, '').trim();
-        const words = normalized.split(/\s+/).filter(word => word.length > 0);
+      try {
+        // Send keywords to server for boosting
+        // Handle both string and array inputs
+        let keywords;
+        if (typeof focusPhrase === 'string') {
+          keywords = focusPhrase;
+        } else if (Array.isArray(focusPhrase)) {
+          keywords = focusPhrase;
+        } else {
+          return;
+        }
         
-        // Create all possible word sequences starting from each position
-        for (let start = 0; start < words.length; start++) {
-          for (let end = start + 1; end <= words.length; end++) {
-            const phrase = words.slice(start, end).join(' ');
-            if (phrase.length > 0) {
-              phrases.push({
-                phrase: phrase,
-                boost: 10.0
-              });
+        const message = JSON.stringify({
+          keywords: keywords
+        });
+        
+        this.websocket.send(message);
+        console.log('Sent keywords to server:', keywords);
+      } catch (e) {
+        console.error('Error sending keywords:', e);
+      }
+    },
+    async connectWebSocket() {
+      return new Promise((resolve, reject) => {
+        try {
+          const ws = new WebSocket(this.serverUrl);
+          
+          ws.onopen = () => {
+            console.log('WebSocket connected');
+            this.websocket = ws;
+            
+            // Send initial keywords if available
+            if (this.focusPhrase) {
+              this.updateKeywords(this.focusPhrase);
             }
-          }
+            
+            resolve();
+          };
+          
+          ws.onmessage = (event) => {
+            try {
+              const result = JSON.parse(event.data);
+              
+              if (result.error) {
+                console.error('Transcription error:', result.error);
+              } else if (result.text) {
+                console.log("result: ", result);
+                // Emit result as array of transcripts (matching old API format)
+                this.$emit('result', [result.text]);
+              }
+            } catch (e) {
+              console.error('Error parsing transcription message:', e, 'Data:', event.data);
+            }
+          };
+          
+          ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            reject(new Error('Failed to connect to transcription server'));
+          };
+          
+          ws.onclose = () => {
+            console.log('WebSocket closed');
+            this.websocket = null;
+            if (this.isRecognizing) {
+              // Try to reconnect if we're still supposed to be recognizing
+              setTimeout(() => {
+                if (this.isRecognizing) {
+                  this.connectWebSocket().catch(err => {
+                    console.error('Failed to reconnect:', err);
+                  });
+                }
+              }, 1000);
+            }
+          };
+        } catch (error) {
+          reject(error);
         }
       });
-      
-      return phrases;
-    },
-    updatePhrases(focusPhrase) {
-      if (!this.recognition || !focusPhrase) return;
-      
-      const phrases = this.buildPhrases(focusPhrase);
-      
-      if (phrases.length > 0 && this.recognition.phrases) {
-        // Update phrases if the API supports it
-        try {
-          console.log("updating phrases: ", phrases);
-          this.recognition.phrases = phrases;
-        } catch (e) {
-          console.log('Could not update phrases:', e);
-        }
-      }
-    },
-    initializeRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      this.recognition = new SpeechRecognition();
-      this.recognition.lang = 'en-US';
-    //   this.recognition.continuous = true;
-      this.recognition.interimResults = false;
-      
-      // Initialize phrases if focusPhrase is available
-      if (this.focusPhrase) {
-        this.updatePhrases(this.focusPhrase);
-      }
-      
-      this.recognition.onend = () => {
-        // Auto-restart if we're still supposed to be recognizing
-        if (this.isRecognizing) {
-          try {
-            // Update phrases before restarting
-            if (this.focusPhrase) {
-              this.updatePhrases(this.focusPhrase);
-            }
-            this.recognition.start();
-          } catch (e) {
-            console.log('Recognition restarting...');
-          }
-        }
-      };
-      
-      this.recognition.onerror = (event) => {
-        console.error('Recognition error:', event.error);
-        if (event.error === 'no-speech' || event.error === 'aborted') {
-          // Try to restart on certain errors
-          if (this.isRecognizing) {
-            setTimeout(() => {
-              try {
-                // Update phrases before restarting
-                if (this.focusPhrase) {
-                  this.updatePhrases(this.focusPhrase);
-                }
-                this.recognition.start();
-              } catch (e) {
-                console.log('Recognition restart after error...');
-              }
-            }, 100);
-          }
-        }
-      };
-      
-      this.recognition.onresult = (event) => {
-        // Handle recognition results
-        const transcripts = []
-        for (let i = 0; i < event.results.length; i++) {
-            for (let j = 0; j < event.results[i].length; j++) {
-                transcripts.push(event.results[i][j].transcript);
-            }
-        }
-        // Emit event or handle result here
-        console.log("emitting result: ", transcripts);
-        this.$emit('result', transcripts);
-      };
     },
     toggleRecognition() {
-      if (!this.isSupported || !this.recognition) return;
+      if (!this.isSupported) return;
       
       if (this.isRecognizing) {
         this.stopRecognition();
@@ -156,35 +137,95 @@ export const Recognize = {
         this.startRecognition();
       }
     },
-    startRecognition() {
-      if (!this.recognition) return;
-      
-      // Update phrases before starting
-      if (this.focusPhrase) {
-        this.updatePhrases(this.focusPhrase);
-      }
-      
+    async startRecognition() {
       try {
-        this.recognition.start();
+        // Get user media
+        this.mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            sampleRate: this.sampleRate,
+            channelCount: this.channels,
+            echoCancellation: true,
+            noiseSuppression: true
+          }
+        });
+
+        // Create audio context
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)({
+          sampleRate: this.sampleRate
+        });
+
+        this.sourceNode = this.audioContext.createMediaStreamSource(this.mediaStream);
+        
+        // Connect to WebSocket
+        await this.connectWebSocket();
+        
+        // Create script processor to convert to 16-bit PCM
+        this.processorNode = this.audioContext.createScriptProcessor(4096, this.channels, this.channels);
+        
+        this.processorNode.onaudioprocess = (e) => {
+          if (!this.isRecognizing || !this.websocket || this.websocket.readyState !== WebSocket.OPEN) return;
+          
+          const inputData = e.inputBuffer.getChannelData(0);
+          
+          // Convert float32 (-1 to 1) to int16 (-32768 to 32767)
+          const int16Data = new Int16Array(inputData.length);
+          for (let i = 0; i < inputData.length; i++) {
+            const s = Math.max(-1, Math.min(1, inputData[i]));
+            int16Data[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+          }
+          
+          // Send audio directly via WebSocket
+          try {
+            this.websocket.send(int16Data.buffer);
+          } catch (error) {
+            console.error('Error sending audio:', error);
+          }
+        };
+
+        this.sourceNode.connect(this.processorNode);
+        this.processorNode.connect(this.audioContext.destination);
+        
         this.isRecognizing = true;
-      } catch (e) {
-        console.error('Error starting recognition:', e);
+      } catch (error) {
+        console.error('Error starting recognition:', error);
+        this.isRecognizing = false;
       }
     },
     stopRecognition() {
-      if (!this.recognition) return;
-      
       this.isRecognizing = false;
-      try {
-        this.recognition.stop();
-      } catch (e) {
-        console.error('Error stopping recognition:', e);
+      
+      // Disconnect audio nodes
+      if (this.processorNode) {
+        this.processorNode.disconnect();
+        this.processorNode = null;
+      }
+      
+      if (this.sourceNode) {
+        this.sourceNode.disconnect();
+        this.sourceNode = null;
+      }
+      
+      if (this.audioContext) {
+        this.audioContext.close();
+        this.audioContext = null;
+      }
+      
+      // Stop media stream
+      if (this.mediaStream) {
+        this.mediaStream.getTracks().forEach(track => track.stop());
+        this.mediaStream = null;
+      }
+      
+      // Close WebSocket connection
+      if (this.websocket) {
+        this.websocket.close();
+        this.websocket = null;
       }
     }
   },
   beforeUnmount() {
-    // Clean up recognition when component is destroyed
-    if (this.recognition && this.isRecognizing) {
+    // Clean up when component is destroyed
+    if (this.isRecognizing) {
       this.stopRecognition();
     }
   }
