@@ -1,5 +1,10 @@
+import { Sentence } from './sentence.js';
+
 // StoryPage component (child)
 export const StoryPage = {
+  components: {
+    Sentence
+  },
   props: ['pageData', 'recognitionResult', 'isActive'],
   emits: ['updateFocusPhrase'],
   template: `
@@ -14,19 +19,15 @@ export const StoryPage = {
         />
       </div>
       <div class="page-sentences">
-        <p v-for="(sentence, sentIndex) in pageData.sentences" :key="sentIndex" class="sentence">
-          <span 
-            v-for="(word, wordIndex) in getSentenceWords(sentence)" 
-            :key="wordIndex"
-            :class="{ 
-              'word-completed': isWordCompleted(sentIndex, wordIndex),
-              'word-current': isCurrentWord(sentIndex, wordIndex)
-            }"
-            class="word"
-          >
-            {{ word }}<span v-if="wordIndex < getSentenceWords(sentence).length - 1">&nbsp;</span>
-          </span>
-        </p>
+        <Sentence
+          v-for="(sentence, sentIndex) in pageData.sentences"
+          :key="sentIndex"
+          :sentence="sentence"
+          :sentenceIndex="sentIndex"
+          :currentSentenceIndex="currentSentenceIndex"
+          :currentWordIndex="currentWordIndex"
+          :isPageComplete="isPageComplete"
+        />
         <div v-if="isPageComplete" class="page-complete">
           ✓ Page Complete!
         </div>
@@ -113,25 +114,6 @@ export const StoryPage = {
   methods: {
     getSentenceWords(sentence) {
       return sentence.split(/\s+/);
-    },
-    isWordCompleted(sentenceIndex, wordIndex) {
-      // Word is completed if it's in a sentence before the current sentence
-      // or if it's in the current sentence but before or equal to the current word
-      // or if we've completed all words on the page
-      if (this.isPageComplete) {
-        return true;
-      }
-      if (sentenceIndex < this.currentSentenceIndex) {
-        return true;
-      }
-      if (sentenceIndex === this.currentSentenceIndex && wordIndex <= this.currentWordIndex) {
-        return true;
-      }
-      return false;
-    },
-    isCurrentWord(sentenceIndex, wordIndex) {
-      // Word is current if it matches the current sentence and word indices
-      return sentenceIndex === this.currentSentenceIndex && wordIndex === this.currentWordIndex;
     },
     normalizeWord(word) {
       return word.toLowerCase().replace(/[.,!?;:]/g, '');
