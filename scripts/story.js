@@ -17,9 +17,9 @@ const Story = {
         <StoryPage 
           v-for="(page, index) in pages" 
           :key="index"
+          :ref="el => { if (el) pageRefs[index] = el }"
           :pageData="page.data"
-          :recognitionResult="recognitionResult"
-          :isActive="index === currentPageIndex"
+          :isCurrentPage="index === currentPageIndex"
           @updateFocusPhrase="handleUpdateFocusPhrase"
           v-show="index === currentPageIndex"
         />
@@ -54,12 +54,22 @@ const Story = {
       currentPageIndex: 0,
       recognitionResult: null,
       currentFocusPhrase: null,
-      storyFile: null
+      storyFile: null,
+      pageRefs: {},
+      focusPhraseSize: 5,
     };
   },
   watch: {
-    currentPageIndex(newIndex) {
+    currentPageIndex() {
       this.updateUrl();
+    },
+    pageRefs: {
+      handler(newValue){
+        if (newValue.length > this.currentPageIndex) {
+          this.currentFocusPhrase = newValue[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
+        }
+      },
+      immediate: true,
     }
   },
   methods: {
@@ -72,7 +82,18 @@ const Story = {
       window.history.pushState({}, '', url);
     },
     handleRecognizeResult(result) {
-      this.recognitionResult = result;
+      const allWords = [];
+      for (let i = 0; i < result.length; i++) {
+        const transcript = result[i];
+        const words = transcript.trim().split(/\s+/);
+        allWords.push(...words);
+      }
+
+      for (let i = 0; i < allWords.length; i++) {
+        this.pageRefs[this.currentPageIndex].processRecognitionResult(allWords[i])
+      }
+
+      currentFocusPhrase = this.pageRefs[this.currentPageIndex].getFocusPhrase(this.focusPhraseSize);
     },
     handleUpdateFocusPhrase(focusPhrase) {
       this.currentFocusPhrase = focusPhrase;

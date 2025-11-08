@@ -1,17 +1,21 @@
 // Word component
 export const Word = {
-  props: ['word', 'isCompleted', 'isCurrent', 'isLast'],
+  props: ['word', 'isCurrentWord'],
+  emits: ['finish'],
   template: `
     <span 
       :class="{ 
         'word-completed': isCompleted,
-        'word-current': isCurrent
+        'word-current': isCurrentWord
       }"
       class="word"
-    >
-      {{ word }}<span v-if="!isLast">&nbsp;</span>
-    </span>
+    >{{ word }}</span>
   `,
+  data() {
+    return {
+      isCompleted: false
+    };
+  },
   watch: {
     isCompleted: {
       handler(newValue, oldValue) {
@@ -23,6 +27,24 @@ export const Word = {
     }
   },
   methods: {
+    normalizeWord(word) {
+      return word.toLowerCase().replace(/[.,!?;:]/g, '');
+    },
+    processRecognitionResult(word) {
+      if (this.isCompleted) return;
+      
+      const normalizedWord = this.normalizeWord(this.word);
+      const normalizedInputWord = this.normalizeWord(word);
+      
+      // Check if the input word matches this word
+      if (normalizedInputWord === normalizedWord) {
+        this.isCompleted = true;
+        this.playWordAdvanceSound();
+        return true;
+      }
+      
+      return false;
+    },
     playWordAdvanceSound() {
       try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();

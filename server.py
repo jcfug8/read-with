@@ -78,10 +78,10 @@ async def websocket_transcribe(websocket: WebSocket):
     # Window size: 1 second (16000 samples at 16kHz = 32000 bytes)
     # Step size: 0.5 seconds (8000 samples = 16000 bytes)
     # This gives 50% overlap for better accuracy and lower latency
-    window_samples = 8000  # 1 second
-    window_bytes = window_samples * 2  # 32000 bytes
-    step_samples = 4000  # 0.5 seconds
-    step_bytes = step_samples * 2  # 16000 bytes
+    window_samples = 16000  # 16000 = 1 second
+    window_bytes = window_samples * 2
+    step_samples = 12000 
+    step_bytes = step_samples * 2  
     
     last_processed_position = 0
     keyword_token_ids = set()  # Store token IDs to boost
