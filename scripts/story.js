@@ -1,6 +1,6 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 import { StoryPage } from './story-page.js';
-import { Recognize } from './recognize.js';
+import { Recognize } from './recognize_old.js';
 
 // Story component (parent)
 const Story = {

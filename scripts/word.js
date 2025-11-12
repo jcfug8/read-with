@@ -1,3 +1,5 @@
+const { isHomophone, getHomophones } = await import('./homophone.js');
+
 // Word component
 export const Word = {
   props: ['word', 'isCurrentWord'],
@@ -28,24 +30,45 @@ export const Word = {
       }
     }
   },
+  computed: {
+    normalizedWord() {
+      return this.normalizeWord(this.word);
+    },
+  },
   methods: {
     normalizeWord(word) {
-      return word.toLowerCase().replace(/[.,!?;:]/g, '');
+      return word.toLowerCase().replace(/[.,!?;:'"]/g, '');
+    },
+    isPrefix(word) {
+      let words = [word]
+      if (getHomophones(word, this.normalizedWord)) {
+        words = getHomophones(word)
+      }
+      for (let word of words) {
+        if (word.length == 1) continue;
+        if (word.startsWith(this.normalizedWord)) {
+          return word.slice(this.normalizedWord.length);
+        }
+      }
+      return null;
     },
     processRecognitionResult(word) {
       if (this.isCompleted) return;
+
+      console.log("processing word: ", word, "---", this.normalizedWord);
       
-      const normalizedWord = this.normalizeWord(this.word);
       const normalizedInputWord = this.normalizeWord(word);
       
       // Check if the input word matches this word
-      if (normalizedInputWord === normalizedWord) {
+      if (normalizedInputWord === this.normalizedWord || isHomophone(normalizedInputWord, this.normalizedWord) || this.isPrefix(normalizedInputWord)) {
         this.isCompleted = true;
         this.playWordAdvanceSound();
-        return true;
       }
       
-      return false;
+      return {
+        isCompleted: this.isCompleted,
+        unmatchedPortion: this.isPrefix(normalizedInputWord)
+      }
     },
     createFireworks() {
       if (!this.$refs.wordElement) return;
@@ -59,7 +82,7 @@ export const Word = {
       const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#ff8b94', '#95e1d3'];
       
       // Create 12 particles
-      const particleCount = 12;
+      const particleCount = 20;
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'spark-particle';
@@ -84,7 +107,7 @@ export const Word = {
         
         // Animate
         requestAnimationFrame(() => {
-          particle.style.transition = 'all 1s ease-out';
+          particle.style.transition = 'all 0.6s ease-out';
           particle.style.transform = `translate(${endX - centerX}px, ${endY - centerY}px) scale(0)`;
           particle.style.opacity = '0';
         });
@@ -105,16 +128,15 @@ export const Word = {
         
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-
-        // Simple, short beep
-        oscillator.frequency.value = 600;
+        
+        oscillator.frequency.value = 800; // Higher pitch for success
         oscillator.type = 'sine';
         
         gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
         
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
+        oscillator.stop(audioContext.currentTime + 0.2);
       } catch (e) {
         console.log('Could not play sound:', e);
       }

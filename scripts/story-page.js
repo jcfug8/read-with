@@ -61,23 +61,32 @@ export const StoryPage = {
     getFocusPhrase(focusPhraseSize) {
       if (this.isCompleted) return;
       let focusPhrase = this.sentenceRefs[this.currentSentenceIndex].getFocusPhrase(focusPhraseSize);
-      for (let wordsNeeded = focusPhraseSize - focusPhrase.length; wordsNeeded > 0; wordsNeeded = focusPhraseSize - focusPhrase.length) {
+      for (let wordsNeeded = focusPhraseSize - focusPhrase.length; wordsNeeded > 0;) {
         if (this.currentSentenceIndex + 1 === this.pageData.sentences.length) break;
-        focusPhrase = this.sentenceRefs[this.currentSentenceIndex+1].getFocusPhrase(wordsNeeded);
+        focusPhrase += " " + this.sentenceRefs[this.currentSentenceIndex+1].getFocusPhrase(wordsNeeded);
+        wordsNeeded = focusPhraseSize - focusPhrase.length
       }
       return focusPhrase;
     },
     processRecognitionResult(word) {  
       if (this.isCompleted) return;
 
-      if (this.sentenceRefs[this.currentSentenceIndex].processRecognitionResult(word)) {
-        this.currentSentenceIndex++
-        if (this.currentSentenceIndex === this.pageData.sentences.length) {
-          this.playPageCompleteSound();
-          this.isCompleted = true;
+      while (word) {
+        let result = this.sentenceRefs[this.currentSentenceIndex].processRecognitionResult(word)
+        word = result.unmatchedPortion;
+        if (result.isCompleted) {
+          this.currentSentenceIndex++
+          if (this.currentSentenceIndex === this.pageData.sentences.length) {
+            this.playPageCompleteSound();
+            this.isCompleted = true;
+            break;
+          }
         }
       }
-      return this.isCompleted;
+      return {
+        isCompleted: this.isCompleted,
+        unmatchedPortion: word,
+      }
     },
     createFireworks() {
       if (!this.$refs.pageElement) return;

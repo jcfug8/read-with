@@ -1,6 +1,6 @@
 export const Recognize = {
   props: ['focusPhrase'],
-  emits: ['result'],
+  emits: ['result', 'recognizing'],
   template: `
     <div class="recognize-container">
       <button 
@@ -19,7 +19,9 @@ export const Recognize = {
     return {
       recognition: null,
       isRecognizing: false,
-      isSupported: false
+      isSupported: false,
+      resultTimeout: null,
+      pendingResult: "",
     };
   },
   watch: {
@@ -53,7 +55,7 @@ export const Recognize = {
       
       sentences.forEach(sentence => {
         // Remove punctuation and normalize
-        const normalized = sentence.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+        const normalized = sentence.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
         const words = normalized.split(/\s+/).filter(word => word.length > 0);
         
         // Create all possible word sequences starting from each position
@@ -81,7 +83,6 @@ export const Recognize = {
       if (phrases.length > 0) {
         // Update phrases if the API supports it
         try {
-          console.log("updating phrases: ", phrases);
           this.recognition.phrases = phrases;
         } catch (e) {
           console.log('Could not update phrases:', e);
@@ -94,11 +95,6 @@ export const Recognize = {
       this.recognition.lang = 'en-US';
     //   this.recognition.continuous = true;
       this.recognition.interimResults = true;
-      
-      // Initialize phrases if focusPhrase is available
-      if (this.focusPhrase) {
-        this.updatePhrases(this.focusPhrase);
-      }
       
       this.recognition.onend = () => {
         // Auto-restart if we're still supposed to be recognizing
@@ -139,11 +135,11 @@ export const Recognize = {
         // Handle recognition results
         const transcripts = []
         for (let i = 0; i < event.results.length; i++) {
-            for (let j = 0; j < event.results[i].length; j++) {
-                transcripts.push(event.results[i][j].transcript);
-            }
+          for (let j = 0; j < event.results[i].length; j++) {
+            transcripts.push(event.results[i][j].transcript);
+          }
         }
-        // Emit event or handle result here
+
         this.$emit('result', transcripts);
       };
     },
@@ -159,10 +155,7 @@ export const Recognize = {
     startRecognition() {
       if (!this.recognition) return;
       
-      // Update phrases before starting
-      if (this.focusPhrase) {
-        this.updatePhrases(this.focusPhrase);
-      }
+      this.$emit('recognizing', true);
       
       try {
         this.recognition.start();

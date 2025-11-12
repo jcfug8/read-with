@@ -1,0 +1,64 @@
+{
+    "pages": [
+        {
+            "sentences": [
+                "Bear has a red hat.",
+                "Bear loves his red hat.",
+                "It is soft and warm."
+            ],
+            "images": [
+                "page_1.png"
+            ]
+        },
+        {
+            "sentences": [
+                "The wind blows.",
+                "Whoosh!",
+                "The hat flies away!"
+            ],
+            "images": [
+                "page_2.png"
+            ]
+        },
+        {
+            "sentences": [
+                "\"Come back, hat!\" says Bear.",
+                "He runs and runs.",
+                "The hat is fast!"
+            ],
+            "images": [
+                "page_3.png"
+            ]
+        },
+        {
+            "sentences": [
+                "The hat lands on a log.",
+                "A frog jumps on it!",
+                "\"Ribbit!\" says Frog."
+            ],
+            "images": [
+                "page_4.png"
+            ]
+        },
+        {
+            "sentences": [
+                "\"Can I have my hat?\" says Bear.",
+                "Frog nods and jumps off.",
+                "Bear says, \"Thank you!\""
+            ],
+            "images": [
+                "page_5.png"
+            ]
+        },
+        {
+            "sentences": [
+                "Bear puts on his red hat.",
+                "It feels warm again.",
+                "He and Frog walk home."
+            ],
+            "images": [
+                "page_6.jpg"
+            ]
+        }
+    ]
+}

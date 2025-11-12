@@ -85,7 +85,7 @@ async def websocket_transcribe(websocket: WebSocket):
     
     last_processed_position = 0
     keyword_token_ids = set()  # Store token IDs to boost
-    bias_value = 5.0  # Boost strength
+    bias_value = 6.0  # Boost strength
     
     try:
         while True:
@@ -93,6 +93,7 @@ async def websocket_transcribe(websocket: WebSocket):
             message = await websocket.receive()
             
             if "text" in message:
+                print(f"Received text")
                 # Text message - keyword update
                 try:
                     data = json.loads(message["text"])
@@ -132,6 +133,7 @@ async def websocket_transcribe(websocket: WebSocket):
                 continue
             
             elif "bytes" in message:
+                print(f"Received bytes")
                 # Binary message - audio data
                 data = message["bytes"]
                 audio_buffer += data
@@ -148,7 +150,7 @@ async def websocket_transcribe(websocket: WebSocket):
                     audio_data = np.frombuffer(chunk_data, dtype=np.int16).astype(np.float32) / 32768.0
                     
                     # Check for silence - skip processing if audio is too quiet
-                    if detect_silence(audio_data, threshold=0.01):
+                    if detect_silence(audio_data, threshold=0.05):
                         # Advance position but don't process
                         last_processed_position += step_bytes
                         continue

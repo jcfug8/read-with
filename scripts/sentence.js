@@ -33,14 +33,22 @@ export const Sentence = {
     processRecognitionResult(word) {
       if (this.isCompleted) return;
 
-      if (this.wordRefs[this.currentWordIndex].processRecognitionResult(word)) {
-        this.currentWordIndex++;
-        if (this.currentWordIndex === this.words.length) {
-          this.playSentenceAdvanceSound();
-          this.isCompleted = true;
+      while (word) {
+        let result = this.wordRefs[this.currentWordIndex].processRecognitionResult(word);
+        word = result.unmatchedPortion;
+        if (result.isCompleted) {
+          this.currentWordIndex++;
+          if (this.currentWordIndex === this.words.length) {
+            this.playSentenceAdvanceSound();
+            this.isCompleted = true;
+            break
+          }
         }
       }
-      return this.isCompleted;
+      return {
+        isCompleted: this.isCompleted,
+        unmatchedPortion: word,
+      }
     },
     getFocusPhrase(focusPhraseSize) {
       if (this.isCompleted) return;
