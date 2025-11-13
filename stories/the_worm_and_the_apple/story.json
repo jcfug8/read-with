@@ -2,28 +2,29 @@
     "pages": [
         {
             "sentences": [
-                "Once upon a time, there was a worm who lived in the apple.",
-                "The worm loved to eat the apple."
+                "A worm was in an apple.",
+                "The worm loved to eat apples."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_1.png"
             ]
         },
         {
             "sentences": [
-                "One day, the worm decided to eat the apple.",
-                "The apple was sweet and juicy."
+                "The apple was good.",
+                "The worm wanted to eat all of the apple."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_2.png"
             ]
         },
         {
             "sentences": [
-                "The worm ate the apple and felt happy."
+                "The worm ate the apple.",
+                "He was happy."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_3.png"
             ]
         }
     ]

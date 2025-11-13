@@ -78,14 +78,25 @@ export const Recognize = {
       console.log("updatePhrases called with focusPhrase: ", focusPhrase);
       if (!this.recognition || !focusPhrase) return;
       
+      // Only update phrases if recognition is not currently active
+      // Some browsers don't support updating phrases while recognition is running
+      if (this.isRecognizing) {
+        return;
+      }
+      
       const phrases = this.buildPhrases(focusPhrase);
       
       if (phrases.length > 0) {
         // Update phrases if the API supports it
+        // The phrases property may not be supported in all browsers
         try {
-          this.recognition.phrases = phrases;
+          // Check if phrases property exists and is writable
+          if ('phrases' in this.recognition) {
+            this.recognition.phrases = phrases;
+          }
         } catch (e) {
-          console.log('Could not update phrases:', e);
+          // Silently ignore - phrases may not be supported in this browser
+          console.log('Phrases not supported or could not be updated:', e);
         }
       }
     },
@@ -101,8 +112,13 @@ export const Recognize = {
         if (this.isRecognizing) {
           try {
             // Update phrases before restarting
+            // Note: phrases should be set before start(), not during active recognition
             if (this.focusPhrase) {
+              // Temporarily set isRecognizing to false to allow phrase update
+              const wasRecognizing = this.isRecognizing;
+              this.isRecognizing = false;
               this.updatePhrases(this.focusPhrase);
+              this.isRecognizing = wasRecognizing;
             }
             this.recognition.start();
           } catch (e) {
@@ -118,10 +134,7 @@ export const Recognize = {
           if (this.isRecognizing) {
             setTimeout(() => {
               try {
-                // Update phrases before restarting
-                if (this.focusPhrase) {
-                  this.updatePhrases(this.focusPhrase);
-                }
+                // Phrases are updated via watcher, don't update here
                 this.recognition.start();
               } catch (e) {
                 console.log('Recognition restart after error...');
@@ -154,6 +167,11 @@ export const Recognize = {
     },
     startRecognition() {
       if (!this.recognition) return;
+      
+      // Update phrases before starting recognition
+      if (this.focusPhrase) {
+        this.updatePhrases(this.focusPhrase);
+      }
       
       this.$emit('recognizing', true);
       

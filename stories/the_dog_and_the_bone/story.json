@@ -6,26 +6,26 @@
                 "The dog was very happy."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_1.png"
             ]
         },
         {
             "sentences": [
                 "The dog wanted to hide the bone.",
-                "The dog dug a hole in the ground."
+                "He dug a hole in the ground."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_2.png"
             ]
         },
         {
             "sentences": [
                 "The dog put the bone in the hole.",
-                "The dog covered it with dirt.",
+                "Then he covered it with dirt.",
                 "The dog was proud of his hiding spot."
             ],
             "images": [
-                "https://picsum.photos/150"
+                "page_3.png"
             ]
         }
     ]
