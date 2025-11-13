@@ -1,61 +1,64 @@
-max and the mud puddle
-
-Page 1
-
-Text:
-Max is a little dog.
-He sees a big puddle.
-It looks fun to jump in!
-
-Illustration idea:
-A small brown puppy looking at a shiny puddle after the rain, tail wagging.
-
-Page 2
-
-Text:
-“Splash!” goes Max.
-Mud flies everywhere!
-Max is very wet now.
-
-Illustration idea:
-Max jumping into the puddle, muddy water splashing all around, his tongue out in joy.
-
-Page 3
-
-Text:
-A bird laughs.
-“Max, you are messy!” says the bird.
-Max just wags his tail.
-
-Illustration idea:
-A cheerful bluebird on a branch laughing while Max smiles, covered in mud.
-
-Page 4
-
-Text:
-Max rolls in the grass.
-The sun feels warm.
-He is happy and sleepy.
-
-Illustration idea:
-Max lying on green grass, drying off in the sunshine, eyes half closed.
-
-Page 5
-
-Text:
-“Time for a bath!” says Mom.
-Max runs fast!
-He does not want a bath!
-
-Illustration idea:
-Max dashing away from a smiling woman holding a towel and a small tub of water.
-
-Page 6
-
-Text:
-But Mom finds Max.
-She washes him clean.
-Now Max smells nice again!
-
-Illustration idea:
-Max sitting in a bubble bath, clean and happy, Mom drying him with a towel.
+{
+    "pages": [
+        {
+            "sentences": [
+                "Max is a little dog.",
+                "He sees a big puddle.",
+                "It looks fun to jump in!"
+            ],
+            "images": [
+                "page_1.png"
+            ]
+        },
+        {
+            "sentences": [
+                "\"Splash!\" goes Max.",
+                "Mud flies everywhere!",
+                "Max is very wet now."
+            ],
+            "images": [
+                "page_2.png"
+            ]
+        },
+        {
+            "sentences": [
+                "A bird laughs.",
+                "\"Max, you are messy!\" says the bird.",
+                "Max just wags his tail."
+            ],
+            "images": [
+                "page_3.png"
+            ]
+        },
+        {
+            "sentences": [
+                "Max rolls in the grass.",
+                "The sun feels warm.",
+                "He is happy and sleepy."
+            ],
+            "images": [
+                "page_4.png"
+            ]
+        },
+        {
+            "sentences": [
+                "\"Time for a bath!\" says Mom.",
+                "Max runs fast!",
+                "He wants a bath!"
+            ],
+            "images": [
+                "page_5.png"
+            ]
+        },
+        {
+            "sentences": [
+                "But Mom finds Max.",
+                "She washes him clean.",
+                "Now Max smells nice again!"
+            ],
+            "images": [
+                "page_6.png"
+            ]
+        }
+    ]
+}

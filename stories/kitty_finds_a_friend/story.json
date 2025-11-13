@@ -1,53 +1,54 @@
-🐱 Kitty Finds a Friend
-
-Written by [Your Name]
-
-Page 1
-
-Text:
-Kitty is sad.
-Kitty is all alone.
-Kitty wants a friend.
-
-Illustration idea:
-A small kitten sitting by a window, looking out at the rain, with a little frown.
-
-Page 2
-
-Text:
-Kitty sees a bug.
-The bug goes buzz, buzz!
-Kitty smiles.
-
-Illustration idea:
-A bright red ladybug flying near Kitty’s paw, Kitty watching happily.
-
-Page 3
-
-Text:
-Kitty runs.
-The bug flies.
-They play and play!
-
-Illustration idea:
-Kitty chasing the bug through grass or flowers, both looking playful.
-
-Page 4
-
-Text:
-The bug lands.
-Kitty stops.
-They sit in the sun.
-
-Illustration idea:
-Kitty and the bug resting together in warm sunlight, with flowers around.
-
-Page 5
-
-Text:
-Kitty is not sad now.
-Kitty has a friend.
-Buzz, buzz! Meow!
-
-Illustration idea:
-Kitty and the bug together, both smiling, maybe with hearts or sparkles around them.
+{
+    "pages": [
+        {
+            "sentences": [
+                "Kitty is sad.",
+                "Kitty is all alone.",
+                "Kitty wants a friend."
+            ],
+            "images": [
+                "page_1.png"
+            ]
+        },
+        {
+            "sentences": [
+                "Kitty sees a bug.",
+                "The bug goes buzz, buzz!",
+                "Kitty smiles."
+            ],
+            "images": [
+                "page_2.png"
+            ]
+        },
+        {
+            "sentences": [
+                "Kitty runs.",
+                "The bug flies.",
+                "They play and play!"
+            ],
+            "images": [
+                "page_3.png"
+            ]
+        },
+        {
+            "sentences": [
+                "The bug lands.",
+                "Kitty stops.",
+                "They sit in the sun."
+            ],
+            "images": [
+                "page_4.png"
+            ]
+        },
+        {
+            "sentences": [
+                "Kitty is not sad now.",
+                "Kitty has a friend.",
+                "Buzz, buzz! Meow!"
+            ],
+            "images": [
+                "page_5.png"
+            ]
+        }
+    ]
+}
