@@ -229,6 +229,8 @@ body {
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .nav-button {
@@ -241,6 +243,8 @@ body {
   cursor: pointer;
   font-weight: 500;
   transition: background 0.2s;
+  flex: 1 1 auto;
+  min-width: 100px;
 }
 
 .nav-button:hover:not(:disabled) {
@@ -257,6 +261,93 @@ body {
   font-size: 1.1rem;
   color: #666;
   font-weight: 500;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .story-container {
+    padding: 15px;
+  }
+
+  .navigation {
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .nav-button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+
+  .page-indicator {
+    order: -1;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1rem;
+  }
+
+  .sentence {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .cover-back-text .sentence {
+    font-size: 2rem;
+  }
+
+  .page-image {
+    max-width: 100%;
+  }
+
+  .cover-back-image {
+    max-width: 100%;
+  }
+
+  .recognize-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .recognize-container {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sentence {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .cover-back-text .sentence {
+    font-size: 1.6rem;
+  }
+
+  .nav-button {
+    font-size: 0.95rem;
+    padding: 12px 16px;
+  }
+
+  .page-indicator {
+    font-size: 0.95rem;
+  }
+
+  .cover-title {
+    font-size: 2rem;
+  }
+
+  .the-end {
+    font-size: 2rem;
+  }
 }
 
 .loading, .error {
