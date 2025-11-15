@@ -19,23 +19,40 @@ const Story = {
           @recognizing="handleRecognizing"
         />
         
-        <!-- Navigation -->
-        <div class="navigation">
-          <button 
-            @click="previousPage" 
-            :disabled="currentPageIndex === 0"
-            class="nav-button prev-button"
-          >
-            ← Previous
-          </button>
-          <span class="page-indicator">{{ currentPageIndex + 1 }} / {{ pages.length }}</span>
-          <button 
-            @click="nextPage" 
-            :disabled="currentPageIndex === pages.length - 1"
-            class="nav-button next-button"
-          >
-            Next →
-          </button>
+        <div class="story-content-container">
+          <div class="progress-indicator">
+            <span>
+              Page {{ currentPageIndex + 1 }} / {{ pages.length }}
+            </span>
+          </div>
+          
+          <div class="progress-bar">
+            <div 
+              v-for="(page, index) in pages" 
+              :key="index"
+              class="progress-dot"
+              :class="{
+                'current': index === currentPageIndex
+              }"
+            ></div>
+          </div>
+          
+          <div class="navigation">
+            <button 
+              @click="previousPage" 
+              :disabled="currentPageIndex === 0"
+              class="nav-button prev-button"
+            >
+              ← Previous
+            </button>
+            <button 
+              @click="nextPage" 
+              :disabled="currentPageIndex === pages.length - 1"
+              class="nav-button next-button"
+            >
+              Next →
+            </button>
+          </div>
         </div>
         
         <StoryPage 

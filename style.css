@@ -219,36 +219,100 @@ body {
   text-align: center;
 }
 
+/* Story content container */
+.story-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Progress indicator */
+.progress-indicator {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Progress bar */
+.progress-bar {
+  display: flex;
+  gap: 0; /* Squares touch */
+  justify-content: center;
+  flex-wrap: nowrap; /* Keep on one line */
+  margin: 15px 0;
+  width: 100%; /* Auto-adjust width */
+  padding: 5px 0;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.progress-dot {
+  flex: 1 1 auto; /* Auto-adjust size */
+  min-width: 4px; /* Minimum size for dots */
+  height: 10px;
+  border-radius: 0; /* Squares */
+  background: #ccc;
+  transition: all 0.2s;
+}
+
+.progress-dot.current {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 3px rgba(66, 185, 131, 0.3);
+  background: #42b983;
+}
+
 /* Navigation */
 .navigation {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  padding: 10px 15px;
   background: #f9f9f9;
   border-radius: 8px;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .nav-button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  background: #42b983;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  background: #42b983; /* Default green, overridden by specific classes */
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
   transition: background 0.2s;
-  flex: 1 1 auto;
-  min-width: 100px;
+  flex: 0 1 auto;
+  min-width: 80px;
 }
 
 .nav-button:hover:not(:disabled) {
-  background: #35a372;
+  background: #35a372; /* Darker green */
+}
+
+.prev-button {
+  background: #9e9e9e; /* Grey */
+}
+
+.prev-button:hover:not(:disabled) {
+  background: #757575; /* Darker grey */
+}
+
+.next-button {
+  background: #42b983; /* Green */
+}
+
+.next-button:hover:not(:disabled) {
+  background: #35a372; /* Darker green */
 }
 
 .nav-button:disabled {
@@ -276,23 +340,29 @@ body {
   }
 
   .navigation {
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     padding: 15px;
   }
 
   .nav-button {
-    width: 100%;
+    flex: 1 1 auto;
     padding: 14px 20px;
     font-size: 1rem;
   }
 
-  .page-indicator {
-    order: -1;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 5px;
+  .progress-indicator {
     font-size: 1rem;
+  }
+
+  .progress-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .progress-dot {
+    min-width: 3px;
+    height: 8px;
   }
 
   .sentence {
